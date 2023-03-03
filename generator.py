@@ -27,7 +27,7 @@ from utils import (
     scale_image
 )
 
-async def generate_image(data: EnkaNetworkResponse, character: CharacterInfo):
+def generate_image(data: EnkaNetworkResponse, character: CharacterInfo):
     """ COLORS """
     GREEN = (150, 255, 169)
     WHITE = (255, 255, 255)
@@ -235,7 +235,7 @@ async def generate_image(data: EnkaNetworkResponse, character: CharacterInfo):
     
     weapon_length = int(draw.textlength(f"{weapon.detail.name}", font=get_font("normal", 22)))
     
-    async def draw_weapon_information(line_buffer: int = 0):
+    def draw_weapon_information(line_buffer: int = 0):
         # Weapon Main Stat
         mainstat = weapon.detail.mainstats
         w = int(
@@ -362,7 +362,7 @@ async def generate_image(data: EnkaNetworkResponse, character: CharacterInfo):
             anchor="lt"
         )
         
-        await draw_weapon_information(line_buffer=5)
+        draw_weapon_information(line_buffer=5)
     else:
         weapon_name = textwrap.wrap(f"{weapon.detail.name}", width=20)
         
@@ -374,7 +374,7 @@ async def generate_image(data: EnkaNetworkResponse, character: CharacterInfo):
                 anchor="lt"
             )
 
-        await draw_weapon_information(line_buffer=28*index)
+        draw_weapon_information(line_buffer=28*index)
             
     all_stats = format_statistics(character)
     statistic_buffer = 365 // len(all_stats)
