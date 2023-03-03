@@ -151,16 +151,15 @@ def format_statistics(char: CharacterInfo) -> dict[str, int]:
 
     max_hp = "{:,}".format(stats.FIGHT_PROP_MAX_HP.to_rounded())
     base_hp = "{:,}".format(stats.BASE_HP.to_rounded())
-    bonus_hp = "{:,}".format(max_hp - base_hp)
+    bonus_hp = "{:,}".format(round(stats.FIGHT_PROP_MAX_HP.value - stats.BASE_HP.value))
 
     max_atk = "{:,}".format(stats.FIGHT_PROP_CUR_ATTACK.to_rounded())
     base_atk = "{:,}".format(stats.FIGHT_PROP_BASE_ATTACK.to_rounded())
-    bonus_atk = "{:,}".format(max_atk - base_atk)
+    bonus_atk = "{:,}".format(round(stats.FIGHT_PROP_CUR_ATTACK.value - stats.FIGHT_PROP_BASE_ATTACK.value))
 
     max_def = "{:,}".format(stats.FIGHT_PROP_CUR_DEFENSE.to_rounded())
     base_def = "{:,}".format(stats.FIGHT_PROP_BASE_DEFENSE.to_rounded())
-    bonus_def = "{:,}".format(max_def - base_def)
-
+    bonus_def = "{:,}".format(round(stats.FIGHT_PROP_CUR_DEFENSE.value - stats.FIGHT_PROP_BASE_DEFENSE.value))
     ret_stats = {
         "HP": f"{max_hp} ({base_hp} + {bonus_hp})",
         "ATK": f"{max_atk} ({base_atk} + {bonus_atk})",

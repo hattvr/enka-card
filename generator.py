@@ -57,7 +57,7 @@ async def generate_image(character: CharacterInfo):
     
     """ FIRST TRIMESTER """   
     character_art = open_image(
-        path=f"attributes/Genshin/UI/{character.image.banner.filename}.png",
+        path=f"attributes/Genshin/Gacha/{character.image.banner.filename}.png",
         asset_url=character.image.banner.url
     )
     character_art = scale_image(character_art, fixed_percent=90)
@@ -66,7 +66,7 @@ async def generate_image(character: CharacterInfo):
     
     foreground.paste(character_art, (0, 0), character_art)
     
-    character_shade = open_image("addons/Assets/enka_character_shade.png")
+    character_shade = open_image("attributes/Assets/enka_character_shade.png")
     foreground.paste(character_shade, (0, 0), character_shade)
     
     w = int(draw.textlength(f"{character.name}", font=get_font("normal", 30)))
@@ -153,7 +153,10 @@ async def generate_image(character: CharacterInfo):
     constellation_starting_index = 160
     for index, constellation in enumerate(character.constellations):
         foreground.paste(c_overlay, (25, constellation_starting_index + 60*index), c_overlay)
-        constellation_icon = open_image(f"attributes/Genshin/UI/{constellation.icon.filename}.png")
+        constellation_icon = open_image(
+            path=f"attributes/Genshin/UI/{constellation.icon.filename}.png",
+            asset_url=constellation.icon.url
+        )
         constellation_icon = scale_image(constellation_icon, fixed_height=45)
         
         if index >= character.constellations_unlocked:
@@ -183,7 +186,11 @@ async def generate_image(character: CharacterInfo):
         for _ in range(4):
             foreground.paste(talent_overlay, (430, 305 + 90 * index), talent_overlay)
         
-        sk = open_image(f"attributes/UI/{skill.icon.filename}.png", resize=(50, 50))
+        sk = open_image(
+            path=f"attributes/Genshin/UI/{skill.icon.filename}.png", 
+            asset_url=skill.icon.url,
+            resize=(50, 50)
+        )
 
         for _ in range(3):
             foreground.paste(sk, (int(471 - (sk.size[0] / 2)), 320 + 90 * index), sk)
@@ -203,7 +210,10 @@ async def generate_image(character: CharacterInfo):
         )
 
     weapon = character.equipments[-1]
-    weapon_image = open_image(f"attributes/UI/{weapon.detail.icon.filename}.png")
+    weapon_image = open_image(
+        path=f"attributes/Genshin/Weapon/{weapon.detail.icon.filename}.png",
+        asset_url=weapon.detail.icon.url
+    )
     weapon_image = scale_image(weapon_image, fixed_height=125)
     
     foreground.paste(weapon_image, (555, 25), weapon_image)
@@ -449,7 +459,10 @@ async def generate_image(character: CharacterInfo):
             continue
 
         artif_icon = await fade_asset_icon(
-            open_image(f"attributes/Genshin/UI/{artifact.detail.icon.filename}.png", resize=(190, 190)),
+            open_image(
+                path=f"attributes/Genshin/Artifact/{artifact.detail.icon.filename}.png", 
+                asset_url=artifact.detail.icon.url,
+                resize=(190, 190)),
             "artifact",
         )
         artif_icon = artif_icon.crop((40, 40, 146, 146))
