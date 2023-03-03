@@ -1,0 +1,4 @@
+enkanetwork.py
+pillow
+pydantic
+requests

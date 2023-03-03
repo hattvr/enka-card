@@ -16,7 +16,6 @@ from prop_reference import (
 )
 
 from utils import (
-    check_asset,
     format_statistics,
     fade_character_art,
     fade_asset_icon,
@@ -62,7 +61,7 @@ async def generate_image(character: CharacterInfo):
     )
     character_art = scale_image(character_art, fixed_percent=90)
     character_art = character_art.crop((615, 85, character_art.width, character_art.height))
-    character_art = await fade_character_art(character_art)
+    character_art = fade_character_art(character_art)
     
     foreground.paste(character_art, (0, 0), character_art)
     
@@ -458,7 +457,7 @@ async def generate_image(character: CharacterInfo):
         if not artifact:
             continue
 
-        artif_icon = await fade_asset_icon(
+        artif_icon = fade_asset_icon(
             open_image(
                 path=f"attributes/Genshin/Artifact/{artifact.detail.icon.filename}.png", 
                 asset_url=artifact.detail.icon.url,

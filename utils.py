@@ -30,6 +30,12 @@ class ActiveSet(BaseModel):
 
 
 def check_asset(path: str, asset_url: str) -> None:
+    """ Helper function to check if an asset
+    exists given a path and reference to the
+    asset's source. If the asset does not exist,
+    the asset will be downloaded from the source.
+    """
+    
     if not os.path.exists(path):
         os.makedirs(os.path.dirname(path), exist_ok=True)
         
@@ -63,7 +69,7 @@ def scale_image(
     fixed_height: int = None,
     fixed_width: int = None,
     fixed_percent: int = None,
-):
+) -> Image:
     if fixed_height:
         wpercent = fixed_height / float(im.size[1])
         wsize = int((float(im.size[0]) * float(wpercent)))
@@ -90,7 +96,7 @@ def get_font(font: Literal["normal"], size: int) -> ImageFont.FreeTypeFont:
     }.get(font, ImageFont.truetype("attributes/Fonts/JA-JP.TTF", size))
 
 
-async def fade_character_art(im: Image):
+def fade_character_art(im: Image) -> Image:
     # Load mask from attributes
     mask = Image.open("attributes/Assets/enka_character_mask.png").convert("L")
     mask = mask.resize((im.size[0], im.size[1]), Image.NEAREST)
@@ -109,10 +115,10 @@ async def fade_character_art(im: Image):
     return result
 
 
-async def fade_asset_icon(im: Image, _type: Literal["artifact", "weapon"]):
+def fade_asset_icon(im: Image, _type: Literal["artifact"]) -> Image:
     mask_fp = {
         "artifact": "attributes/Assets/artifact_mask.png",
-        "weapon": "attributes/Assets/weapon_mask.png",
+        # Insert other masks you'd like to use here, if any
     }.get(_type)
 
     mask = Image.open(mask_fp).convert("L")
