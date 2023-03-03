@@ -1,6 +1,6 @@
 #  Enka.Network Card Generation (Python-Based)
 
-<img src="https://cdn.discordapp.com/attachments/1014919079154425917/1081307105119703141/card.png" width="100%"><br>
+<img src="https://cdn.discordapp.com/attachments/1014919079154425917/1081311454407442543/Hu_Tao_2023-03-03_15-25-26.png" width="100%"><br>
 
 ## About
 
