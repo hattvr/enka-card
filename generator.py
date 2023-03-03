@@ -4,6 +4,7 @@ import re
 
 from datetime import datetime
 
+from enkanetwork import EnkaNetworkResponse
 from enkanetwork.model.character import CharacterInfo
 from enkanetwork.model.equipments import EquipmentsType, EquipType, Equipments
 from enkanetwork.enum import EquipmentsType, DigitType
@@ -26,7 +27,7 @@ from utils import (
     scale_image
 )
 
-async def generate_image(character: CharacterInfo):
+async def generate_image(data: EnkaNetworkResponse, character: CharacterInfo):
     """ COLORS """
     GREEN = (150, 255, 169)
     WHITE = (255, 255, 255)
@@ -88,7 +89,7 @@ async def generate_image(character: CharacterInfo):
 
     draw.text(
         (38 + w + 35, 51),
-        f"hatter",
+        f"{data.player.nickname}",
         fill=(255, 255, 255, 200),
         anchor="lm",
         font=get_font("normal", 16),
@@ -98,15 +99,15 @@ async def generate_image(character: CharacterInfo):
     
     draw.text(
         (38, info_gap + 325),
-        f"UID: 123123123",
+        f"UID: {data.uid}",
         font=get_font("normal", 18),
     )
     
-    w = draw.textlength(f"WL7", font=get_font("normal", 18))
-    w2 = draw.textlength(f"AR56", font=get_font("normal", 18))
+    w = draw.textlength(f"WL{data.player.world_level}", font=get_font("normal", 18))
+    w2 = draw.textlength(f"AR{data.player.level}", font=get_font("normal", 18))
     draw.text(
         (38, info_gap + 350),
-        f"WL7",
+        f"WL{data.player.world_level}",
         font=get_font("normal", 18),
     )
     
@@ -123,7 +124,7 @@ async def generate_image(character: CharacterInfo):
     
     draw.text(
         (38 + w + 8 + 5, info_gap + 350),
-        f"AR56",
+        f"AR{data.player.level}",
         font=get_font("normal", 18),
         fill=BEIGE
     )

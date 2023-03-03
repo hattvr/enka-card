@@ -11,7 +11,7 @@ A python-based card generation script that allows users to generate Enka.Network
 - [EnkaNetwork.py](https://github.com/mrwan200/EnkaNetwork.py) - Enka.Network API Wrapper
 - [Pillow](https://github.com/python-pillow/Pillow) - Python Imaging Library
 
-## Usage
+## Initial Setup
 
 Install the required dependencies:
 
@@ -19,9 +19,32 @@ Install the required dependencies:
 pip install -r requirements.txt
 ```
 
+## Usage
+Change the UID in `main.py` to your UID.
+```python
+import asyncio
+
+from generator import generate_image
+from enkanetwork import EnkaNetworkAPI
+
+client = EnkaNetworkAPI()
+uid = 604905943 # <- Change this to your UID
+
+async def main():
+    async with client:
+        data = await client.fetch_user(uid)
+        for character in data.characters:
+            print(f"[{uid}] Generating enka-card for {character.name}")
+            await generate_image(character)
+
+asyncio.run(main())
+```
+
 Run the script:
 ```shell
 python main.py
 ```
+
+
 
 Your character cards will be output in the `/output` directory. Happy generating!
