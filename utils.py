@@ -1,27 +1,16 @@
-import requests
 import os
-
 from collections import Counter
-from typing import Literal, List
-from pydantic import BaseModel
+from typing import List, Literal
 
-from enkanetwork.model.character import CharacterInfo
-from enkanetwork.model.equipments import EquipmentsType
+import requests
 from enkanetwork.enum import EquipmentsType
 from enkanetwork.model import Stats
+from enkanetwork.model.character import CharacterInfo
+from enkanetwork.model.equipments import EquipmentsType
+from PIL import Image, ImageChops, ImageFont, ImageOps
+from pydantic import BaseModel
 
-from PIL import (
-    ImageFont,
-    Image,
-    ImageChops,
-    ImageOps,
-)
-
-from prop_reference import (
-    RELIQUARY_STATS,
-    ELEMENT_REFERENCE,
-    ELEMENT_REFERENCE,
-)
+from prop_reference import ELEMENT_REFERENCE, RELIQUARY_STATS
 
 
 class ActiveSet(BaseModel):
@@ -30,23 +19,24 @@ class ActiveSet(BaseModel):
 
 
 def check_asset(path: str, asset_url: str) -> None:
-    """ Helper function to check if an asset
+    """Helper function to check if an asset
     exists given a path and reference to the
     asset's source. If the asset does not exist,
     the asset will be downloaded from the source.
     """
-    
+
     if not os.path.exists(path):
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        
+
         try:
             with open(path, "wb") as f:
                 f.write(requests.get(asset_url).content)
         except:
             raise Exception("There was an error downloading the asset.")
 
+
 def open_image(
-    path: str, 
+    path: str,
     asset_url: str = None,
     mode: str = "RGBA",
     resize: tuple = None,
@@ -57,10 +47,10 @@ def open_image(
 
     image = Image.open(path)
     image = image.convert(mode)
-    
+
     if resize:
         image = image.resize(resize, resample)
-    
+
     return image
 
 
@@ -161,26 +151,32 @@ def format_statistics(char: CharacterInfo) -> dict[str, int]:
 
     max_atk = "{:,}".format(stats.FIGHT_PROP_CUR_ATTACK.to_rounded())
     base_atk = "{:,}".format(stats.FIGHT_PROP_BASE_ATTACK.to_rounded())
-    bonus_atk = "{:,}".format(round(stats.FIGHT_PROP_CUR_ATTACK.value - stats.FIGHT_PROP_BASE_ATTACK.value))
+    bonus_atk = "{:,}".format(
+        round(stats.FIGHT_PROP_CUR_ATTACK.value - stats.FIGHT_PROP_BASE_ATTACK.value)
+    )
 
     max_def = "{:,}".format(stats.FIGHT_PROP_CUR_DEFENSE.to_rounded())
     base_def = "{:,}".format(stats.FIGHT_PROP_BASE_DEFENSE.to_rounded())
-    bonus_def = "{:,}".format(round(stats.FIGHT_PROP_CUR_DEFENSE.value - stats.FIGHT_PROP_BASE_DEFENSE.value))
+    bonus_def = "{:,}".format(
+        round(stats.FIGHT_PROP_CUR_DEFENSE.value - stats.FIGHT_PROP_BASE_DEFENSE.value)
+    )
+
     ret_stats = {
-        "HP": f"{max_hp} ({base_hp} + {bonus_hp})",
-        "ATK": f"{max_atk} ({base_atk} + {bonus_atk})",
-        "DEF": f"{max_def} ({base_def} + {bonus_def})",
+        "FIGHT_PROP_HP": f"{max_hp} ({base_hp} + {bonus_hp})",
+        "FIGHT_PROP_ATTACK": f"{max_atk} ({base_atk} + {bonus_atk})",
+        "FIGHT_PROP_DEFENSE": f"{max_def} ({base_def} + {bonus_def})",
     }
 
     if stats.FIGHT_PROP_ELEMENT_MASTERY.value:
-        ret_stats["Elemental Mastery"] = "{:,}".format(
+        ret_stats["FIGHT_PROP_ELEMENT_MASTERY"] = "{:,}".format(
             stats.FIGHT_PROP_ELEMENT_MASTERY.to_rounded()
         )
 
     for x in RELIQUARY_STATS:
         if getattr(stats, x).value:
             value = getattr(stats, x)
-            ret_stats[RELIQUARY_STATS[x]] = (
+
+            ret_stats[x] = (
                 value.to_rounded()
                 if isinstance(value, Stats)
                 else value.to_percentage_symbol()
@@ -188,20 +184,20 @@ def format_statistics(char: CharacterInfo) -> dict[str, int]:
 
     if len(ret_stats) > 8:
         # Who cares about these statistics
-        ret_stats.pop("Healing Bonus", None)
-        ret_stats.pop("Shield Strength", None)
+        ret_stats.pop("FIGHT_PROP_HEAL_ADD", None)
+        ret_stats.pop("FIGHT_PROP_SHIELD_COST_MINUS_RATIO", None)
 
     while len(ret_stats) > 8:
         # Handle damage bonuses if there are more than 8 statistics
         bonuses = []
         for item in ret_stats:
-            if "DMG Bonus" in item:
+            if "ADD_HURT" in item:
                 bonuses.append(float(ret_stats[item].replace("%", "")))
 
         # If all bonuses are the same, return whatever comes first
         if all(x == bonuses[0] for x in bonuses):
             for item in ret_stats.copy():
-                if "DMG Bonus" in item and char.element.name not in item:
+                if "ADD_HURT" in item and char.element.value.upper() not in item:
                     ret_stats[item] = ret_stats.pop(item)
 
             return {k: ret_stats[k] for k in list(ret_stats)[:8]}
@@ -211,7 +207,7 @@ def format_statistics(char: CharacterInfo) -> dict[str, int]:
             if bonus != sorted(bonuses)[-1]:
                 for item in ret_stats:
                     if (
-                        "DMG Bonus" in item
+                        "ADD_HURT" in item
                         and float(ret_stats[item].replace("%", "")) == bonus
                     ):
                         ret_stats.pop(item)
