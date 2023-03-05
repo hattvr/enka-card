@@ -35,7 +35,7 @@ async def main():
         data = await client.fetch_user(uid)
         for character in data.characters:
             print(f"[{uid}] Generating enka-card for {character.name}")
-            await generate_image(character)
+            generate_image(character)
 
 asyncio.run(main())
 ```
