@@ -467,18 +467,15 @@ def generate_image(
         "EQUIP_DRESS",
     ]
 
-    artifacts = filter(
-        lambda x: x.type == EquipmentsType.ARTIFACT, character.equipments
-    )
     artifact_spacer = 119
     for artif_index, equipment_type in enumerate(positions):
-        artifact: Equipments = next(
-            filter(
-                lambda x: x.detail.artifact_type.value == EquipType(equipment_type),
-                artifacts,
-            ),
-            None,
-        )
+        artifact = next(filter(
+            lambda x: (
+                x.type == EquipmentsType.ARTIFACT and 
+                x.detail.artifact_type.value == equipment_type
+            ), 
+            character.equipments
+        ), None)
 
         ImageDraw.Draw(foreground, "RGBA").rounded_rectangle(
             (
