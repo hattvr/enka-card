@@ -1,4 +1,4 @@
 enkanetwork.py
 pillow
-pydantic
+pydantic<2
 requests
