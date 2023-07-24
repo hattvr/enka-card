@@ -13,6 +13,7 @@ A python-based card generation script that allows users to generate Enka.Network
 
 ## Initial Setup
 
+This project requires `python` is 3.9 or later.
 Install the required dependencies:
 
 ```shell
