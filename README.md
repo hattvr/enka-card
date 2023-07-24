@@ -13,6 +13,7 @@ A python-based card generation script that allows users to generate Enka.Network
 
 ## Initial Setup
 
+This project requires `python` is 3.9 or later.
 Install the required dependencies:
 
 ```shell
@@ -32,7 +33,7 @@ uid = 604905943 # <- Change this to your UID
 
 async def main():
     async with client:
-        data = await client.fetch_user(uid)
+        data = await client.fetch_user_by_uid(uid)
         for character in data.characters:
             print(f"[{uid}] Generating enka-card for {character.name}")
             generate_image(data, character, client.lang)
