@@ -1,4 +1,4 @@
-enkanetwork.py
+enkanetwork.py>=1.4.0
 pillow
-pydantic
+pydantic<2
 requests
